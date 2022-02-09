@@ -3,6 +3,7 @@
 #define S2 6
 #define S3 7
 #define sensorOut 8
+
 int redFrequency = 0;
 int greenFrequency = 0;
 int blueFrequency = 0;
@@ -16,6 +17,8 @@ LiquidCrystal lcd(11, 12, 5, 4, 3, 2);
 int redColor = 0;
 int greenColor = 0;
 int blueColor = 0;
+
+
 #define BUTTON_PIN A1
 boolean buttonWasUp = true;  // была ли кнопка отпущена?
 
@@ -55,12 +58,11 @@ void loop() {
 
   // считываем выходную частоту:
   redFrequency = pulseIn(sensorOut, LOW);
+  
   // подгоняем считанное значение к диапазону 0-255;
-  // вместо «XX» нужно поставить собственные значения; например, так:
-  // redColor = map(redFrequency, 70, 120, 255,0):
   redColor = map(redFrequency, 90, 500, 255, 0);
 
-  // печатаем значение для красного цвета:
+
   Serial.print("R = ");
   Serial.print(redFrequency);
   delay(100);
@@ -78,7 +80,6 @@ void loop() {
 
   
   // подгоняем считанное значение к диапазону 0-255;
-
   greenColor = map(greenFrequency, 100, 730, 255, 0);
 
   Serial.print(" G = ");
@@ -95,18 +96,20 @@ void loop() {
 
   // считываем выходную частоту:
   blueFrequency = pulseIn(sensorOut, LOW);
+  
   // подгоняем считанное значение к диапазону 0-255;
   blueColor = map(blueFrequency, 60, 500, 255, 0);
 
   Serial.print(" B = ");
   Serial.print(blueFrequency);
+  
   delay(100);
   Serial.println();
 
 
 
 
-  if (greenFrequency > 800 and blueFrequency > 500 and redFrequency > 700){
+  if (greenFrequency > 800 and blueFrequency > 500 and redFrequency > 700){ //Сначала делаем проверку на черный
     if (lan == 0) { //делаем проверку на язык
       lcd.setCursor(4, 0);
       lcd.print("English");
@@ -124,7 +127,7 @@ void loop() {
     lcd.clear();
   }
 
-  else if (greenFrequency < 160 and blueFrequency < 160 and redFrequency < 160){
+  else if (greenFrequency < 160 and blueFrequency < 160 and redFrequency < 160){ //затем проверку на белый
     if (lan == 0) { //делаем проверку на язык
       lcd.setCursor(4, 0);
       lcd.print("English");
@@ -143,12 +146,10 @@ void loop() {
     
   }
 
-  else{
+  else{ //если это не черный и не белый, то проверяем оставшиеся три цвета
 
   
 
-  // смотрим, какой цвет определился и печатаем
-  // соответствующее сообщение в мониторе порта:
   if (redColor > greenColor && redColor > blueColor) {
     if (lan == 0) { //делаем проверку на язык
       lcd.setCursor(4, 0);
@@ -204,8 +205,8 @@ void loop() {
   }
 
 
-  
-     boolean buttonIsUp = digitalRead(BUTTON_PIN);
+     //считываем нажатие кнопки
+     boolean buttonIsUp = digitalRead(BUTTON_PIN); 
    if (buttonWasUp && !buttonIsUp) {
     delay(5);
      buttonIsUp = digitalRead(BUTTON_PIN);
